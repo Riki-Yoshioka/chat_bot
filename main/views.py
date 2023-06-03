@@ -5,6 +5,8 @@ from datetime import datetime
 
 import csv
 
+# def mz():
+
 
 def index(request):
     
@@ -21,13 +23,17 @@ def index(request):
             input.send_bot = False
             input.send_date = datetime.now()
             input.save()
+        
+        perfect_answer = 0
 
-    
 
         answer = Q_A.objects.filter(
-            user_input__icontains = input.message
+            user_input = input.message
         )
 
+        if answer:
+            perfect_answer = 1
+        print(perfect_answer)
 
         bot_answer = []
     
@@ -39,8 +45,29 @@ def index(request):
                 send_date = datetime.now(),
             )
 
-   
+        if perfect_answer == 0:
+            answer = Q_A.objects.filter(
+                user_input__icontains = input.message
+            )
 
+
+            bot_answer = []
+        
+            for i in range(len(answer)):
+                bot_answer.append("【質問】" + answer[i].user_input + "\r\n【回答】" + answer[i].bot_reply)
+                Dialogue.objects.create(
+                    message = bot_answer[i],
+                    send_bot = True,
+                    send_date = datetime.now(),
+                )
+            if answer:
+                perfect_answer = 1
+            else:
+                Dialogue.objects.create(
+                    message = "分かりません。",
+                    send_bot = True,
+                    send_date = datetime.now(),
+                )
 
     context = {
         "form": form,
