@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static './main/css/style.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <main class="main">
+        <h2 class="title">Let'sCode チャットボット</h2>
+        <div class="message_background">
+            {% if messages %}
+                <ul>
+                {% for mes in messages %}
+                    <li>
+                        {% if mes.send_bot == False %}
+                        <p class="message">{{ mes.message }}</p>
+                        <p class="time">{{ mes.send_date }}</p>
+                        {% else %}
+                        <p class="answer">{{ mes.message | linebreaksbr }}</p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No messages</p>
+            {% endif %}
+        </div>
+
+        <form action="" method="POST" class="message_form" name="question" required>
+            {% csrf_token %}
+            <div class="textbox">
+            {{ form.message }}
+            <button type="submit" class="submit_button">送信</button>
+            </div>
+        </form>
+    </main>
+    <script>
+        let message_window = document.querySelector(".message_background")
+        message_window.scrollTo(0, message_window.scrollHeight)
+    </script>
+</body>
+</html>
